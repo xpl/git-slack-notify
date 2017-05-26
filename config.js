@@ -11,7 +11,7 @@ module.exports = {
 		{
 			name: 'git-slack-notify', // display name
 			dir: process.cwd (),	  // repo directory
-			channel: 'general'		  // channel to post notifications
+			channel: 'general'	      // channel to post notifications
 		}
 	]
 }
