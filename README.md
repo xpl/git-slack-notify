@@ -16,22 +16,22 @@ npm install
 
 ## Configure
 
-Edit `config.js`:
+Edit [`config.js`](https://github.com/xpl/git-slack-notify/blob/master/config.js):
 
 ```javascript
 module.exports = {
 
-	accessToken: '<your Slack OAuth access token here>',
+    accessToken: '<your Slack OAuth access token here>',
 
-	fetchFrequency: 30000, // check for new commits each 30s
+    fetchFrequency: 30000, // check for new commits each 30s
 
-	repos: [
-		{
-			name: 'My Cool Project',				// display name
-			dir: '/usr/local/my cool project',		// local Git repo directory
-			channel: 'general'						// where to post
-		}
-	]
+    repos: [
+        {
+            name: 'My Cool Project',                // display name
+            dir: '/usr/local/my cool project',      // local Git repo directory
+            channel: 'general'                      // where to post
+        }
+    ]
 }
 ```
 
