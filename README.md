@@ -1,5 +1,7 @@
 # git-slack-notify
 
+![pic](https://cdn.jpg.wtf/futurico/a6/39/1495803414-a6396ced47686e423007d19d48c00062.png)
+
 ## WTF
 
 - Watches for new commits in Git repositories using `git fetch && git log --all`
