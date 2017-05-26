@@ -1,0 +1,42 @@
+{
+  "name": "git-slack-notify",
+  "version": "0.0.1",
+  "description": "Sends Slack notifications for new commits in Git repositories",
+  "main": "index",
+  "scripts": {
+    "start": "node ./index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xpl/git-slack-notify.git"
+  },
+  "keywords": [
+    "git",
+    "slack",
+    "notify",
+    "watchdog",
+    "slack-bot"
+  ],
+  "author": "Vitaly Gordon <rocket.mind@gmail.com>",
+  "license": "Unlicense",
+  "maintainers": [
+    {
+      "name": "Vitaly Gordon",
+      "email": "rocket.mind@gmail.com"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/xpl/git-slack-notify/issues"
+  },
+  "homepage": "https://github.com/xpl/git-slack-notify",
+  "dependencies": {
+    "@slack/client": "^3.10.0",
+    "ansicolor": "^1.0.32",
+    "babel-core": "^6.24.1",
+    "babel-plugin-async-to-promises": "^1.0.5",
+    "babel-plugin-transform-async-generator-functions": "*",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-polyfill": "^6.16.0",
+    "ololog": "0.0.21"
+  }
+}

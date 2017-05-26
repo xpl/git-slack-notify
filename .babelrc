@@ -1,0 +1,3 @@
+{
+  "plugins": ["async-to-promises", "transform-async-to-generator", "transform-async-generator-functions"]
+}
