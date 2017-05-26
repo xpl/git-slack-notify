@@ -4,7 +4,7 @@
 
 - Watches for new commits in Git repositories using `git fetch && git log --all`
 - Reports them to Slack channels
-- Written in JavaScript — your grandmother can easily read it!
+- Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
 
 ## Install
 
