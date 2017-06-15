@@ -3,8 +3,15 @@
 /*  ------------------------------------------------------------------------ */
 
     const log    = require ('ololog'),
-          ansi   = require ('ansicolor').nice,
-          config = require (process.argv[2] || './config')
+          ansi   = require ('ansicolor').nice
+
+/*  ------------------------------------------------------------------------ */
+
+    const [, , configPath = './config'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
+
+    log.cyan ('Reading config from', configPath.bright)
+
+    const config = require (configPath)
 
 /*  ------------------------------------------------------------------------ */
 
@@ -52,7 +59,7 @@
 
         let lastTopCommitHash = fs.readFileSync (state, { encoding: 'utf-8' })
 
-        log.cyan ('Starting from', lastTopCommitHash)
+        log.cyan ('Starting from', lastTopCommitHash.bright)
 
         while (true) {
 
@@ -92,7 +99,7 @@
 
     async function watch ({ name, dir, channel = 'general' }) {
 
-        log.bright.cyan (`Watching for new commits in ${dir}...`)
+        log.cyan ('Watching for new commits in', dir.bright)
 
         for await (let commit of newCommits (dir)) {
 
