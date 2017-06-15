@@ -22,19 +22,28 @@ npm start
 
 ## Configure
 
-Default config is at [`config.json`](https://github.com/xpl/git-slack-notify/blob/master/config.json). Running with other file:
+Default config name will be `config.json`. Running with other file:
 
 ```bash
 npm start myconfig.json
 ```
 
-```javascript
-{    "accessToken":   "<your Slack OAuth access token here>",
-  "fetchFrequency":    30000,
-           "repos": [ {              "name": "git-slack-notify",
-                                      "dir": "./",
-                                  "channel": "general",
-                        "lastTopCommitHash": ""                  } ] }
+If not found, it will be auto-generated with example data:
+
+```
+{
+    accessToken: '<your Slack OAuth access token here>',
+
+    fetchFrequency: 30000, // check for new commits each 30s
+
+    repos: [
+        {
+            name: 'Git Slack Notify',			// display name
+            dir: process.cwd (),				// local git repo path
+            channel: 'general' 					// where to post
+        }
+    ]
+}
 ```
 
 It is auto-updated (with formatting) when new commits arrive and `lastTopCommitHash` changes.

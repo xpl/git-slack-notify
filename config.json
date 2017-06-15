@@ -1,6 +1,0 @@
-{    "accessToken":   "<your Slack OAuth access token here>",
-  "fetchFrequency":    30000,
-           "repos": [ {              "name": "git-slack-notify",
-                                      "dir": "./",
-                                  "channel": "general",
-                        "lastTopCommitHash": ""                  } ] }

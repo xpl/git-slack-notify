@@ -5,13 +5,36 @@
     const log       = require ('ololog'),
           ansi      = require ('ansicolor').nice,
           fs        = require ('fs'),
-          stringify = require ('string.ify')
+          stringify = require ('string.ify'),
+          path      = require ('path')
 
 /*  ------------------------------------------------------------------------ */
 
-    const [, , configFile = './config.json'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
+    const [processPath, , configFile = './config.json'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
 
     log.cyan ('Reading config from', configFile.bright)
+
+    if (!fs.existsSync (configFile)) {
+
+        log.green ('No', configFile.bright, 'found, so we filled it with the example data.', 'Check it out, edit and re-start.'.bright)
+
+        fs.writeFileSync (configFile, stringify.json ({
+
+            accessToken: '<your Slack OAuth access token here>',
+
+            fetchFrequency: 30000, // check for new commits each 30s
+
+            repos: [
+                {
+                    name: 'Git Slack Notify',           // display name
+                    dir: process.cwd (),                // local git repo path
+                    channel: 'general'                  // where to post
+                }
+            ]
+        }))
+
+        process.exit ()
+    }
 
     const config = JSON.parse (fs.readFileSync (configFile, { encoding: 'utf-8' }))
 
@@ -69,7 +92,7 @@
 
                 if (!commits.find (c => c.hash === lastTopCommitHash)) {
 
-                    fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found`)
+                    fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found. Try removing it from the config file.`)
                 }
 
                 for (let commit of commits) { // yield new commits since lastTopCommitHash
