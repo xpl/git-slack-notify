@@ -2,16 +2,23 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const log    = require ('ololog'),
-          ansi   = require ('ansicolor').nice
+    const log       = require ('ololog'),
+          ansi      = require ('ansicolor').nice,
+          fs        = require ('fs'),
+          stringify = require ('string.ify')
 
 /*  ------------------------------------------------------------------------ */
 
-    const [, , configPath = './config'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
+    const [, , configFile = './config.json'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
 
-    log.cyan ('Reading config from', configPath.bright)
+    log.cyan ('Reading config from', configFile.bright)
 
-    const config = require (configPath)
+    const config = JSON.parse (fs.readFileSync (configFile, { encoding: 'utf-8' }))
+
+    const saveConfig = () => {
+
+        fs.writeFileSync (configFile, stringify.json (config), { encoding: 'utf-8' })
+    }
 
 /*  ------------------------------------------------------------------------ */
 
@@ -50,16 +57,9 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    async function* newCommits (dir) {
+    async function* newCommits ({ dir, lastTopCommitHash }) {
 
-        const path = require ('path'),
-              fs   = require ('fs')
-
-        const state = path.join (process.cwd (), './state') // it would be cool if we just had the persistence at the language level, e.g "let persist lastHash = ..."
-
-        let lastTopCommitHash = fs.readFileSync (state, { encoding: 'utf-8' })
-
-        log.cyan ('Starting from', lastTopCommitHash.bright)
+        log.cyan ('Watching for new commits in', dir.bright, 'starting from', (lastTopCommitHash || 'top').bright)
 
         while (true) {
 
@@ -69,7 +69,7 @@
 
                 if (!commits.find (c => c.hash === lastTopCommitHash)) {
 
-                    fatal ('Invalid state: no commit with lastTopCommitHash found (try clearing the ./state file)')
+                    fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found`)
                 }
 
                 for (let commit of commits) { // yield new commits since lastTopCommitHash
@@ -85,7 +85,9 @@
                 }
             }
 
-            fs.writeFileSync (state, lastTopCommitHash = commits[0].hash)
+            lastTopCommitHash = commits[0].hash
+
+            saveConfig () // writes lastTopCommitHash change
 
             await sleep (config.fetchFrequency)
         }
@@ -97,11 +99,9 @@
     
 /*  ------------------------------------------------------------------------ */
 
-    async function watch ({ name, dir, channel = 'general' }) {
+    async function watch ({ name, dir, channel = 'general', lastTopCommitHash = '' }) {
 
-        log.cyan ('Watching for new commits in', dir.bright)
-
-        for await (let commit of newCommits (dir)) {
+        for await (let commit of newCommits ({ name, dir, lastTopCommitHash })) {
 
             log.bright.green (commit)
 

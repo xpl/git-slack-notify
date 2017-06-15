@@ -38,6 +38,7 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-polyfill": "^6.16.0",
     "nodemon": "^1.11.0",
-    "ololog": "0.0.21"
+    "ololog": "*",
+    "string.ify": "*"
   }
 }

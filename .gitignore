@@ -1,9 +1,3 @@
-# Config
-./config.js
-
-# Runtime state
-./state
-
 # Logs
 logs
 *.log
