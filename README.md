@@ -1,10 +1,10 @@
 # git-slack-notify
 
-## WTF
+![pic](https://cdn.jpg.wtf/futurico/a6/39/1495803414-a6396ced47686e423007d19d48c00062.png)
 
-- Watches for new commits in Git repositories using `git fetch && git log --all`
-- Reports them to Slack channels
-- Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
+- [x] Watches for new commits in Git repositories using `git fetch && git log --all`
+- [x] Reports them to Slack channels
+- [x] Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
 
 ## Install
 
