@@ -1,3 +1,6 @@
+# Runtime state
+./state
+
 # Logs
 logs
 *.log

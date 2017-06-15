@@ -4,7 +4,7 @@
 
     const log    = require ('ololog'),
           ansi   = require ('ansicolor').nice,
-          config = require ('./config')
+          config = require (process.argv[2] || './config')
 
 /*  ------------------------------------------------------------------------ */
 
@@ -45,21 +45,40 @@
 
     async function* newCommits (dir) {
 
-        let prevCommits = null
+        const path = require ('path'),
+              fs   = require ('fs')
+
+        const state = path.join (process.cwd (), './state') // it would be cool if we just had the persistence at the language level, e.g "let persist lastHash = ..."
+
+        let lastTopCommitHash = fs.readFileSync (state, { encoding: 'utf-8' })
+
+        log.cyan ('Starting from', lastTopCommitHash)
 
         while (true) {
 
-            const newCommits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all`))
+            const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all`))
 
-            if (prevCommits) { // yield all new commits (if any)
+            if (lastTopCommitHash) {
 
-                for (let i = 0; (newCommits[i].hash !== prevCommits[0].hash) && (i < newCommits.length); i++) {
+                if (!commits.find (c => c.hash === lastTopCommitHash)) {
 
-                    yield newCommits[i]
+                    fatal ('Invalid state: no commit with lastTopCommitHash found (try clearing the ./state file)')
+                }
+
+                for (let commit of commits) { // yield new commits since lastTopCommitHash
+
+                    if (commit.hash === lastTopCommitHash) {
+
+                        break;
+
+                    } else {
+
+                        yield commit
+                    }
                 }
             }
 
-            prevCommits = newCommits
+            fs.writeFileSync (state, lastTopCommitHash = commits[0].hash)
 
             await sleep (config.fetchFrequency)
         }

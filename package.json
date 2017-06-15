@@ -4,7 +4,7 @@
   "description": "Sends Slack notifications for new commits in Git repositories",
   "main": "index",
   "scripts": {
-    "start": "node ./index"
+    "start": "nodemon ./index"
   },
   "repository": {
     "type": "git",
