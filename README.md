@@ -14,29 +14,27 @@ cd git-slack-notify
 npm install
 ```
 
-## Configure
-
-Edit [`config.js`](https://github.com/xpl/git-slack-notify/blob/master/config.js):
-
-```javascript
-module.exports = {
-
-    accessToken: '<your Slack OAuth access token here>',
-
-    fetchFrequency: 30000, // check for new commits each 30s
-
-    repos: [
-        {
-            name: 'My Cool Project',                // display name
-            dir: '/usr/local/my cool project',      // local Git repo directory
-            channel: 'general'                      // where to post
-        }
-    ]
-}
-```
-
-## Run
+## Running
 
 ```bash
 npm start
 ```
+
+## Configure
+
+Default config is at [`config.json`](https://github.com/xpl/git-slack-notify/blob/master/config.json). Running with other file:
+
+```bash
+npm start myconfig.json
+```
+
+```javascript
+{    "accessToken":   "<your Slack OAuth access token here>",
+  "fetchFrequency":    30000,
+           "repos": [ {              "name": "git-slack-notify",
+                                      "dir": "./",
+                                  "channel": "general",
+                        "lastTopCommitHash": ""                  } ] }
+```
+
+It is auto-updated (with formatting) when new commits arrive and `lastTopCommitHash` changes.
