@@ -110,8 +110,6 @@
 
             lastTopCommitHash = commits[0].hash
 
-            saveConfig () // writes lastTopCommitHash change
-
             await sleep (config.fetchFrequency)
         }
     }
@@ -130,7 +128,8 @@
 
             slack.chat.postMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*` , (err, res) => {
 
-                if (err) { fatal (err) }
+                if (err) fatal (err)
+                else saveConfig () // writes lastTopCommitHash change
             })
         }
     };
