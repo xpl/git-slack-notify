@@ -54,7 +54,7 @@
                             log.dim.cyan ('> '.bright + cmd)
 
                             require ('child_process').exec (cmd, (err, stdout, stderr) => {
-                                if (err) { fatal (stderr) }
+                                if (err) { fatal (`${cmd} failed: ${err}, stderr output: ${stderr}`) }
                                 else { resolve (stdout) }
                             })
                         })
@@ -65,7 +65,7 @@
 
         entry.split ('\n').map ((line, i) => {
 
-            if (i === 0) return { hash: line }
+            if (i === 0) return { hash: line }w
             else if (line.indexOf ('    ') === 0) { return { comment: line.slice (4) } }
             else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
             return {}
