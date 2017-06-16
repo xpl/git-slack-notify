@@ -38,9 +38,9 @@ If not found, it will be auto-generated with example data:
 
     repos: [
         {
-            name: 'Git Slack Notify',			// display name
-            dir: process.cwd (),				// local git repo path
-            channel: 'general' 					// where to post
+            name: 'Git Slack Notify',           // display name
+            dir: process.cwd (),                // local git repo path
+            channel: 'general'                  // where to post
         }
     ]
 }
