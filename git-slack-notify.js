@@ -65,7 +65,7 @@
 
         entry.split ('\n').map ((line, i) => {
 
-            if (i === 0) return { hash: line }w
+            if (i === 0) return { hash: line }
             else if (line.indexOf ('    ') === 0) { return { comment: line.slice (4) } }
             else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
             return {}
