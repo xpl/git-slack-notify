@@ -120,17 +120,38 @@
     
 /*  ------------------------------------------------------------------------ */
 
-    async function watch ({ name, dir, channel = 'general', lastTopCommitHash = '' }) {
+    const muted = ({ comment }) => comment.match (/^\d+\.\d+\.\d+$/) // NPM version numbers
+
+/*  ------------------------------------------------------------------------ */
+
+    async function watch (repo) {
+
+        const { name, dir, channel = 'general', lastTopCommitHash = '' } = repo
 
         for await (let commit of newCommits ({ name, dir, lastTopCommitHash })) {
 
-            log.bright.green (commit)
+            if (muted (commit)) { // filters out automatically generated garbage
 
-            slack.chat.postMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*` , (err, res) => {
+                log.dim.green (commit)
 
-                if (err) fatal (err)
-                else saveConfig () // writes lastTopCommitHash change
-            })
+            } else {
+
+                log.bright.green (commit)
+
+                slack.chat.postMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*` , (err, res) => {
+
+                    if (err) {
+
+                        fatal (err)
+
+                    } else {
+
+                        repo.lastTopCommitHash = commit.hash
+
+                        saveConfig ()
+                    }
+                })
+            }
         }
     };
 
