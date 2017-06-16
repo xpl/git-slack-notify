@@ -53,7 +53,7 @@
 
                             log.dim.cyan ('> '.bright + cmd)
 
-                            require ('child_process').exec (cmd, (err, stdout, stderr) => {
+                            require ('child_process').exec (cmd, {maxBuffer: 1024 * 1024}, (err, stdout, stderr) => {
                                 if (err) { fatal (`${cmd} failed: ${err}, stderr output: ${stderr}`) }
                                 else { resolve (stdout) }
                             })
