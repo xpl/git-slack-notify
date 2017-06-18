@@ -97,7 +97,7 @@
                     fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found. Try removing it from the config file.`)
                 }
 
-                for (let commit of commits.slice (0, lastTopCommitIndex)) { // yield new commits since lastTopCommitHash
+                for (let commit of commits.slice (0, lastTopCommitIndex).reverse ()) { // yield new commits since lastTopCommitHash
 
                     if (commit.hash === lastTopCommitHash) {
 
