@@ -120,6 +120,8 @@
 
     const slack = new (require ('@slack/client').WebClient) (config.accessToken);
     
+    const postSlackMessage = (...args) => new Promise ((return_, throw_) => slack.chat.postMessage (...args, (e, x) => e ? throw_ (e) : return_ (x)))
+
 /*  ------------------------------------------------------------------------ */
 
     const muted = ({ comment }) => comment.match (/^\d+\.\d+\.\d+$/) // NPM version numbers
@@ -140,19 +142,11 @@
 
                 log.bright.green (commit)
 
-                slack.chat.postMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*` , (err, res) => {
+                await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*`)
 
-                    if (err) {
+                repo.lastTopCommitHash = commit.hash
 
-                        fatal (err)
-
-                    } else {
-
-                        repo.lastTopCommitHash = commit.hash
-
-                        saveConfig ()
-                    }
-                })
+                saveConfig ()
             }
         }
     };
