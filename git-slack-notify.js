@@ -90,12 +90,14 @@
 
             if (lastTopCommitHash) {
 
-                if (!commits.find (c => c.hash === lastTopCommitHash)) {
+                const lastTopCommitIndex = commits.findIndex (c => c.hash === lastTopCommitHash)
+
+                if (lastTopCommitIndex < 0) {
 
                     fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found. Try removing it from the config file.`)
                 }
 
-                for (let commit of commits) { // yield new commits since lastTopCommitHash
+                for (let commit of commits.slice (0, lastTopCommitIndex)) { // yield new commits since lastTopCommitHash
 
                     if (commit.hash === lastTopCommitHash) {
 
