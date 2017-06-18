@@ -36,14 +36,13 @@ If not found, it will be auto-generated with example data:
 
     fetchFrequency: 30000, // check for new commits each 30s
 
-    repos: [
+    repos: [                                    // you can track multiple repositories
         {
             name: 'Git Slack Notify',           // display name
             dir: process.cwd (),                // local git repo path
-            channel: 'general'                  // where to post
+            channel: 'general',                 // where to post
+            lastTopCommitHash: ''               // this is auto-updated when new commits arrive
         }
     ]
 }
 ```
-
-It is auto-updated (with formatting) when new commits arrive and `lastTopCommitHash` changes.
