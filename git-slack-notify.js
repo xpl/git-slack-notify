@@ -80,26 +80,28 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    async function* newCommits ({ dir, lastTopCommitHash }) {
+    async function* newCommits (repo) {
 
-        log.cyan ('Watching for new commits in', dir.bright, 'starting from', (lastTopCommitHash || 'top').bright)
+        const { dir } = repo
+
+        log.cyan ('Watching for new commits in', dir.bright, 'starting from', (repo.lastTopCommitHash || 'top').bright)
 
         while (true) {
 
             const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all`))
 
-            if (lastTopCommitHash) {
+            if (repo.lastTopCommitHash) {
 
-                const lastTopCommitIndex = commits.findIndex (c => c.hash === lastTopCommitHash)
+                const lastTopCommitIndex = commits.findIndex (c => c.hash === repo.lastTopCommitHash)
 
                 if (lastTopCommitIndex < 0) {
 
-                    fatal (`Invalid state of ${dir}: no commit with hash ${lastTopCommitHash} found. Try removing it from the config file.`)
+                    fatal (`Invalid state of ${dir}: no commit with hash ${repo.lastTopCommitHash} found. Try removing it from the config file.`)
                 }
 
                 for (let commit of commits.slice (0, lastTopCommitIndex).reverse ()) { // yield new commits since lastTopCommitHash
 
-                    if (commit.hash === lastTopCommitHash) {
+                    if (commit.hash === repo.lastTopCommitHash) {
 
                         break;
 
@@ -110,7 +112,12 @@
                 }
             }
 
-            lastTopCommitHash = commits[0].hash
+            if (commits[0] && (repo.lastTopCommitHash != commits[0].hash)) {
+
+                repo.lastTopCommitHash = commits[0].hash
+
+                saveConfig ()
+            }
 
             await sleep (config.fetchFrequency)
         }
@@ -132,7 +139,7 @@
 
         const { name, dir, channel = 'general', lastTopCommitHash = '' } = repo
 
-        for await (let commit of newCommits ({ name, dir, lastTopCommitHash })) {
+        for await (let commit of newCommits (repo)) {
 
             if (muted (commit)) { // filters out automatically generated garbage
 
@@ -143,10 +150,6 @@
                 log.bright.green (commit)
 
                 await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*`)
-
-                repo.lastTopCommitHash = commit.hash
-
-                saveConfig ()
             }
         }
     };
