@@ -131,7 +131,8 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const muted = ({ comment }) => comment.match (/^\d+\.\d+\.\d+$/) // NPM version numbers
+    const muted = ({ comment }) => comment.match (/^\d+\.\d+\.\d+$/) || // NPM version numbers
+                                   comment === 'Update README.md'       // GitHub online editor
 
 /*  ------------------------------------------------------------------------ */
 
