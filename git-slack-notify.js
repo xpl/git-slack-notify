@@ -47,7 +47,7 @@
 
     if (!config.accessToken || config.accessToken === '<your Slack OAuth access token here>') {
 
-        fatal (`You should specify a valid OAuth ${'accessToken'.white} — get one at ${'http://slack.com/api'.cyan}`)
+        fatal (`You should specify a valid OAuth ${'accessToken'.white} — get one at ${'https://api.slack.com/'.cyan}`)
     }
 
     for (const repo of config.repos) {
@@ -62,8 +62,7 @@
     }
 
     const saveConfig = () => fs.writeFileSync (configFile, prettyPrintJSON (config), { encoding: 'utf-8' })
-
-    saveConfig ()
+          saveConfig ()
 
 /*  ------------------------------------------------------------------------ */
 
