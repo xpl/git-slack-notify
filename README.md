@@ -38,7 +38,7 @@ If not found, it will be auto-generated with example data:
 
     repos: [                                    // you can track multiple repositories
         {
-            name: 'Git Slack Notify',           // display name
+            name: 'Git Slack Notify',           // display name (optional, if not set, will be generated from `dir`)
             dir: process.cwd (),                // local git repo path
             channel: 'general',                 // where to post
             lastTopCommitHash: ''               // this is auto-updated when new commits arrive
