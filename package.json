@@ -4,7 +4,7 @@
   "description": "Sends Slack notifications for new commits in Git repositories",
   "main": "index",
   "scripts": {
-    "start": "nodemon ./index"
+    "start": "node index"
   },
   "repository": {
     "type": "git",
@@ -31,14 +31,12 @@
   "homepage": "https://github.com/xpl/git-slack-notify",
   "dependencies": {
     "@slack/client": "^3.10.0",
-    "ansicolor": "^1.0.32",
+    "ansicolor": "*",
     "babel-core": "^6.24.1",
     "babel-plugin-async-to-promises": "^1.0.5",
     "babel-plugin-transform-async-generator-functions": "*",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-polyfill": "^6.16.0",
-    "nodemon": "^1.11.0",
-    "ololog": "*",
-    "string.ify": "*"
+    "ololog": "*"
   }
 }

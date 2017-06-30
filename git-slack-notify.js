@@ -5,20 +5,25 @@
     const log       = require ('ololog'),
           ansi      = require ('ansicolor').nice,
           fs        = require ('fs'),
-          stringify = require ('string.ify'),
           path      = require ('path')
+
+/*  ------------------------------------------------------------------------ */
+
+    const fatal = (...args) => (log.bright.red.error ('\n', ...args, '\n'), process.exit (0))
+
+/*  ------------------------------------------------------------------------ */
+
+    const prettyPrintJSON = x => JSON.stringify (x, null, 4)
 
 /*  ------------------------------------------------------------------------ */
 
     const [processPath, , configFile = './config.json'] = process.argv.filter (x => x !== 'index.js') // nodemon incorrectly passes index.js occasionally
 
-    log.cyan ('Reading config from', configFile.bright)
-
     if (!fs.existsSync (configFile)) {
 
-        log.green ('No', configFile.bright, 'found, so we filled it with the example data.', 'Check it out, edit and re-start.'.bright)
+        log.green ('No', configFile.white.bright, 'found, so we filled it with the example data.', 'Check it out, edit and re-start.\n'.bright)
 
-        fs.writeFileSync (configFile, stringify.json ({
+        fs.writeFileSync (configFile, prettyPrintJSON ({
 
             accessToken: '<your Slack OAuth access token here>',
 
@@ -36,16 +41,29 @@
         process.exit ()
     }
 
+    log.cyan ('Reading config from', configFile.bright)
+
     const config = JSON.parse (fs.readFileSync (configFile, { encoding: 'utf-8' }))
 
-    const saveConfig = () => {
+    if (!config.accessToken || config.accessToken === '<your Slack OAuth access token here>') {
 
-        fs.writeFileSync (configFile, stringify.json (config), { encoding: 'utf-8' })
+        fatal (`You should specify a valid OAuth ${'accessToken'.white} — get one at ${'http://slack.com/api'.cyan}`)
     }
 
-/*  ------------------------------------------------------------------------ */
+    for (const repo of config.repos) {
 
-    const fatal = (...args) => (log.bright.red.error (...args), process.exit (1))
+        if (!repo.dir) {
+            fatal (`You should specify a ${'dir'.white} for your repository: ${JSON.stringify (repo).yellow}`)
+        }
+
+        if (!repo.name) {
+            repo.name = path.basename (repo.dir)
+        }
+    }
+
+    const saveConfig = () => fs.writeFileSync (configFile, prettyPrintJSON (config), { encoding: 'utf-8' })
+
+    saveConfig ()
 
 /*  ------------------------------------------------------------------------ */
 
