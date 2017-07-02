@@ -78,18 +78,23 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const parseGitLog = stdout => stdout.split (/^commit /m).map (entry =>
+    const parseGitLog = stdout => stdout
 
-        entry.split ('\n').map ((line, i) => {
+        .split (/^commit /m)
+        .map (lines => lines
+                            .split ('\n')
+                            .map ((line, i) => {
 
-            if (i === 0) return { hash: line }
-            else if (line.indexOf ('    ') === 0) { return { comment: line.slice (4) } }
-            else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
-            return {}
+                                if (i === 0) return { hash: line }
+                                else if (line.indexOf ('    ') === 0) { return { comment: line.slice (4) } }
+                                else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
+                                return {}
 
-        }).reduce ((a, b) => Object.assign (a, b), {})
-
-    ).filter (c => c.hash)
+                            })
+                            .reduce ((a, b) => ({ ...a, ...b }), {})
+        )
+        .filter (c => c.hash)
+        .map (c => ({ ...c, author: c.Author.match (/^(.*)\s<.+>$/)[1] }))
 
 /*  ------------------------------------------------------------------------ */
 
@@ -167,7 +172,7 @@
 
                 log.bright.green (commit)
 
-                await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.Author.split (' ')[0]}\`: *${commit.comment}*`)
+                await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.comment}*`)
             }
         }
     };
