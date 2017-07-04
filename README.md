@@ -8,7 +8,7 @@
 
 ## Install
 
-You will need [NPM](https://www.npmjs.com/get-npm)
+You will need [NPM](https://www.npmjs.com/get-npm).
 
 ```bash
 git clone http://github.com/xpl/git-slack-notify
