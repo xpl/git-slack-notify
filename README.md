@@ -34,7 +34,7 @@ npm start myconfig.json
 
 If not found, it will be auto-generated with example data:
 
-```
+```json
 {
     accessToken: '<your Slack OAuth access token here>',
 
