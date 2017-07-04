@@ -6,6 +6,10 @@
 - [x] Reports them to Slack channels
 - [x] Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
 
+TODO:
+
+- [ ] Automated tests.
+
 ## Install
 
 You will need [NPM](https://www.npmjs.com/get-npm).
