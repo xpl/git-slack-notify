@@ -6,6 +6,11 @@
 - [x] Reports them to Slack channels
 - [x] Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
 
+## Features
+
+- [x] Super-easy no-brain installation
+- [x] Filters automatically generated commits (NPM version numbers, online `README.md` editing, etc)
+
 ## TODO
 
 - [ ] Automated tests
