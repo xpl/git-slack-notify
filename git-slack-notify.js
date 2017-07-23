@@ -150,7 +150,7 @@
 /*  ------------------------------------------------------------------------ */
 
     const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+$/) || // NPM version numbers
-                                   message === 'Update README.md'       // GitHub online editor
+                                   message.match (/^Update (.+)\.md$/)  // GitHub online editor
 
 /*  ------------------------------------------------------------------------ */
 
@@ -160,7 +160,7 @@
 
         for await (let commit of newCommits (repo)) {
 
-            if (muted (commit)) { // filters out automatically generated garbage
+            if (muted (commit)) { // filters out automatically generated garbage and other non-informative stuff
 
                 log.dim.green (commit)
 
