@@ -78,23 +78,27 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const parseGitLog = stdout => stdout
+    const parseGitLog = stdout =>
 
-        .split (/^commit /m)
-        .map (lines => lines
-                            .split ('\n')
-                            .map ((line, i) => {
+        stdout.split (/^commit /m).map (text => {
 
-                                if (i === 0) return { hash: line }
-                                else if (line.indexOf ('    ') === 0) { return { comment: line.slice (4) } }
-                                else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
-                                return {}
+            const [headers, message = ''] = text.split ('\n\n')
 
-                            })
-                            .reduce ((a, b) => ({ ...a, ...b }), {})
-        )
-        .filter (c => c.hash)
-        .map (c => ({ ...c, author: c.Author.match (/^(.*)\s<.+>$/)[1] }))
+            const props = headers.split ('\n')
+                                 .map ((line, i) => {
+                                    if (i === 0) return { hash: line }
+                                    else { try { const [,key,value] = line.match (/^(.+)\:\s+(.*)$/); return { [key]: value } } catch (e) { } }
+                                    return {}
+                                 })
+                                 .reduce ((a, b) => ({ ...a, ...b }), {})
+
+            return props.hash && {
+                ...props,
+                author: props.Author.match (/^(.*)\s<.+>$/)[1],
+                message: message.split ('\n')[0].trim ()
+            }
+        })
+        .filter (c => c)
 
 /*  ------------------------------------------------------------------------ */
 
@@ -108,7 +112,7 @@
 
         log.cyan ('Watching for new commits in', dir.bright, 'starting from', (repo.lastTopCommitHash || 'top').bright)
 
-        while (true) {
+        while (true /* this is OK due to the asynchronous nature of this function */) {
 
             const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all`))
 
@@ -117,27 +121,19 @@
                 const lastTopCommitIndex = commits.findIndex (c => c.hash === repo.lastTopCommitHash)
 
                 if (lastTopCommitIndex < 0) {
-
                     fatal (`Invalid state of ${dir}: no commit with hash ${repo.lastTopCommitHash} found. Try removing it from the config file.`)
                 }
 
                 for (let commit of commits.slice (0, lastTopCommitIndex).reverse ()) { // yield new commits since lastTopCommitHash
 
-                    if (commit.hash === repo.lastTopCommitHash) {
-
-                        break;
-
-                    } else {
-
-                        yield commit
-                    }
+                    if (commit.hash === repo.lastTopCommitHash) { break }
+                    else { yield commit }
                 }
             }
 
             if (commits[0] && (repo.lastTopCommitHash != commits[0].hash)) {
 
                 repo.lastTopCommitHash = commits[0].hash
-
                 saveConfig ()
             }
 
@@ -153,8 +149,8 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const muted = ({ comment }) => comment.match (/^\d+\.\d+\.\d+$/) || // NPM version numbers
-                                   comment === 'Update README.md'       // GitHub online editor
+    const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+$/) || // NPM version numbers
+                                   message === 'Update README.md'       // GitHub online editor
 
 /*  ------------------------------------------------------------------------ */
 
@@ -172,7 +168,7 @@
 
                 log.bright.green (commit)
 
-                await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.comment}*`)
+                await postSlackMessage (channel, `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.message}*`)
             }
         }
     };
