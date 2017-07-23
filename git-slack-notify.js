@@ -149,8 +149,9 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+$/) || // NPM version numbers
-                                   message.match (/^Update (.+)\.md$/)  // GitHub online editor
+    const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+$/)   ||  // NPM version numbers
+                                   message.match (/^Update (.+)\.md$/) ||  // GitHub online editor's default message
+                                   message.startsWith ('Merge branch')     // auto-generated merge commits
 
 /*  ------------------------------------------------------------------------ */
 

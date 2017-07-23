@@ -9,7 +9,7 @@
 ## Features
 
 - [x] Super-easy no-brain installation
-- [x] Filters automatically generated commits (NPM version numbers, online `README.md` editing, etc)
+- [x] Filters auto-generated / non-informative messages (NPM version tags, quick fixes in MD files, merge commits)
 
 ## TODO
 
