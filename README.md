@@ -8,7 +8,6 @@
 
 ## Features
 
-- [x] No need for web server / GitHub account / whatever. Just `git clone` whatever you want to monitor.
 - [x] Super-easy no-brain installation
 - [x] Filters auto-generated / non-informative messages (NPM version tags, quick fixes in MD files, merge commits)
 
