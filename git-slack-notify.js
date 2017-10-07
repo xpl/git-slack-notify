@@ -68,7 +68,7 @@
 
     const exec = cmd => new Promise (resolve => {
 
-                            log.dim.cyan ('> '.bright + cmd)
+                            //log.dim.cyan ('> '.bright + cmd)
 
                             require ('child_process').exec (cmd, {maxBuffer: 1024 * 1024}, (err, stdout, stderr) => {
                                 if (err) { fatal (`${cmd} failed: ${err}, stderr output: ${stderr}`) }
@@ -114,7 +114,7 @@
 
         while (true /* this is OK due to the asynchronous nature of this function */) {
 
-            const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all`))
+            const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all --author-date-order`))
 
             if (repo.lastTopCommitHash) {
 
