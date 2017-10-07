@@ -114,26 +114,14 @@
 
         while (true /* this is OK due to the asynchronous nature of this function */) {
 
-            const commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all --author-date-order`))
+            const since = repo.lastTopCommitHash ? repo.lastTopCommitHash + '..' : ''
+                , commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all --reverse --author-date-order ${since}`))
 
-            if (repo.lastTopCommitHash) {
-
-                const lastTopCommitIndex = commits.findIndex (c => c.hash === repo.lastTopCommitHash)
-
-                if (lastTopCommitIndex < 0) {
-                    fatal (`Invalid state of ${dir}: no commit with hash ${repo.lastTopCommitHash} found. Try removing it from the config file.`)
+            if (commits.length) {
+                if (repo.lastTopCommitHash) { // DO NOT report if launched first time (when lastTopCommitHash is yet to determine...)
+                    for (const commit of commits) yield commit
                 }
-
-                for (let commit of commits.slice (0, lastTopCommitIndex).reverse ()) { // yield new commits since lastTopCommitHash
-
-                    if (commit.hash === repo.lastTopCommitHash) { break }
-                    else { yield commit }
-                }
-            }
-
-            if (commits[0] && (repo.lastTopCommitHash != commits[0].hash)) {
-
-                repo.lastTopCommitHash = commits[0].hash
+                repo.lastTopCommitHash = commits[commits.length - 1].hash
                 saveConfig ()
             }
 
@@ -150,7 +138,7 @@
 /*  ------------------------------------------------------------------------ */
 
     const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+$/)   ||  // NPM version numbers
-                                   message.match (/^Update (.+)\.md$/i) ||  // GitHub online editor's default message
+                                   message.match (/^Update (.+)\.md$/i) || // GitHub online editor's default message
                                    message.startsWith ('Merge branch')     // auto-generated merge commits
 
 /*  ------------------------------------------------------------------------ */
