@@ -114,8 +114,10 @@
 
         while (true /* this is OK due to the asynchronous nature of this function */) {
 
-            const since = repo.lastTopCommitHash ? repo.lastTopCommitHash + '..' : ''
-                , commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --all --reverse --author-date-order ${since}`))
+            const opts = repo.lastTopCommitHash
+                                ? `--reverse ${repo.lastTopCommitHash}..` // all since last commit hash
+                                : '-1'                                    // last commit
+                , commits = parseGitLog (await exec (`cd ${dir.replace (/^\\\s/g, '\\ ')} && git fetch && git log --author-date-order --all ${opts}`))
 
             if (commits.length) {
                 if (repo.lastTopCommitHash) { // DO NOT report if launched first time (when lastTopCommitHash is yet to determine...)
