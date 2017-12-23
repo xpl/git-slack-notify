@@ -2,7 +2,7 @@
 
 ![pic](https://cdn.jpg.wtf/futurico/a6/39/1495803414-a6396ced47686e423007d19d48c00062.png)
 
-- [x] Tracks new commits in multiple local Git repositories using `git fetch && git log --all`
+- [x] Tracks new commits in multiple local Git repositories using `git fetch && git rev-list`
 - [x] Reports them to Slack channels
 - [x] Written in JavaScript — [your grandmother can easily read it](https://github.com/xpl/git-slack-notify/blob/master/git-slack-notify.js)
 
