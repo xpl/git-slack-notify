@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/xpl/git-slack-notify",
   "dependencies": {
-    "@slack/client": "^3.10.0",
+    "@slack/client": "^4.0.0",
     "ansicolor": "*",
     "babel-core": "^6.24.1",
     "babel-plugin-async-to-promises": "^1.0.5",
