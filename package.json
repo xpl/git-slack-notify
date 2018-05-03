@@ -30,14 +30,14 @@
   },
   "homepage": "https://github.com/xpl/git-slack-notify",
   "dependencies": {
-    "@slack/client": "^4.0.0",
-    "ansicolor": "*",
-    "babel-core": "^6.24.1",
-    "babel-plugin-async-to-promises": "^1.0.5",
-    "babel-plugin-transform-async-generator-functions": "*",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-polyfill": "^6.16.0",
-    "ololog": "*"
+    "@slack/client": "4.2.0",
+    "ansicolor": "1.1.72",
+    "babel-core": "6.24.1",
+    "babel-plugin-async-to-promises": "1.0.5",
+    "babel-plugin-transform-async-generator-functions": "6.24.1",
+    "babel-plugin-transform-async-to-generator": "6.24.1",
+    "babel-plugin-transform-object-rest-spread": "6.23.0",
+    "babel-polyfill": "6.16.0",
+    "ololog": "1.1.94"
   }
 }
