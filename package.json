@@ -4,7 +4,7 @@
   "description": "Sends Slack notifications for new commits in Git repositories",
   "main": "index",
   "scripts": {
-    "start": "node index"
+    "start": "supervisor index"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,8 @@
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-polyfill": "6.16.0",
-    "ololog": "1.1.94"
-  }
+    "ololog": "1.1.94",
+    "supervisor": "0.12.0"
+  },
+  "devDependencies": {}
 }
