@@ -5,7 +5,8 @@
     const log       = require ('ololog'),
           ansi      = require ('ansicolor').nice,
           fs        = require ('fs'),
-          path      = require ('path')
+          path      = require ('path'),
+          testMode  = process.argv.includes ('--test')
 
 /*  ------------------------------------------------------------------------ */
 
@@ -66,7 +67,7 @@
         }
     }
 
-    const saveConfig = () => fs.writeFileSync (configFile, prettyPrintJSON (config), { encoding: 'utf-8' })
+    const saveConfig = () => (!testMode ? fs.writeFileSync (configFile, prettyPrintJSON (config), { encoding: 'utf-8' }) : undefined)
           saveConfig ()
 
 /*  ------------------------------------------------------------------------ */
@@ -83,41 +84,44 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const parseGitLog = stdout =>
-            stdout
-                .split ('')
-                .map (text => text.split ('\n')
-                                        .reduce ((commit, line, i) => {
-                                            if (i === 0) commit.hash = line
-                                            else if (line.startsWith ('author')) {
-                                                try {
-                                                    const [,author,timestamp,timezone] = line.match (/author (.+) \<.+\> (\d+)( [+-]\d+)/)
-                                                    commit.author = author
-                                                    commit.authorTimestamp = Number (timestamp)
-                                                } catch (e) {
-                                                    log.bright.red.error ('Failed to parse:', line)
-                                                    throw e
-                                                }
-                                            }
-                                            else if (line.startsWith ('committer')) {
-                                                try {
-                                                    const [,committer,timestamp,timezone] = line.match (/committer (.+) \<.+\> (\d+)( [+-]\d+)/)
-                                                    commit.committer = committer
-                                                    commit.committerTimestamp = Number (timestamp)
-                                                } catch (e) {
-                                                    log.bright.red.error ('Failed to parse:', line)
-                                                    throw e
-                                                }
-                                            }
-                                            else if (line.startsWith ('    ')) commit.message.push (line.trim ())
-                                            return commit
-                                        }, { message: [] })
+    const parseGitLog = stdout => {
+
+        return stdout
+                .split ('\u0000')
+                .map (text => text
+                                .split ('\n')
+                                .reduce ((commit, line, i) => {
+                                    if (i === 0) commit.hash = line
+                                    else if (line.startsWith ('author')) {
+                                        try {
+                                            const [,author,timestamp,timezone] = line.match (/author (.+) \<.+\> (\d+)( [+-]\d+)/)
+                                            commit.author = author
+                                            commit.authorTimestamp = Number (timestamp)
+                                        } catch (e) {
+                                            log.bright.red.error ('Failed to parse:', line)
+                                            throw e
+                                        }
+                                    }
+                                    else if (line.startsWith ('committer')) {
+                                        try {
+                                            const [,committer,timestamp,timezone] = line.match (/committer (.+) \<.+\> (\d+)( [+-]\d+)/)
+                                            commit.committer = committer
+                                            commit.committerTimestamp = Number (timestamp)
+                                        } catch (e) {
+                                            log.bright.red.error ('Failed to parse:', line)
+                                            throw e
+                                        }
+                                    }
+                                    else if (line.startsWith ('    ')) commit.message.push (line.trim ())
+                                    return commit
+                                }, { message: [] })
                     )
                 .filter (c => c.hash)
                 .map (c => ({ ...c,
                     message: c.message.filter (s => s).join ('\n'),
                     timestamp: Math.max (c.authorTimestamp || 0, c.committerTimestamp || 0) + 1
                 }))
+            }
 
 /*  ------------------------------------------------------------------------ */
 
@@ -170,15 +174,17 @@
 
             if (muted (commit)) { // filters out automatically generated garbage and other non-informative stuff
 
-                log.dim.green (commit)
+                log.dim.green (commit, '\n')
 
             } else {
 
-                log.bright.green (commit)
+                log.bright.green (commit, '\n')
 
-                await slack.chat.postMessage ({ channel,
-                                                parse: 'full',
-                                                text: `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.message.replace (/\n/g, ' \ ')}*` })
+                if (!testMode) {
+                    await slack.chat.postMessage ({ channel,
+                                                    parse: 'full',
+                                                    text: `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.message.replace (/\n/g, ' \ ')}*` })
+                }
             }
         }
     };
