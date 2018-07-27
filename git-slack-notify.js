@@ -162,11 +162,11 @@
             , port = config.port
             , path = 'job/restart_tracker/build'
             , args = require ('querystring').stringify ({ token: config.accessToken })
-            , auth = `Basic ${Buffer.from (config.username + ":" + config.password).toString ("base64")}`
+            , auth = config.username + ":" + config.password
             , method = 'GET'
             , options = { host, port, auth, path: `http://${host}:${port}/${path}?${args}`, }
 
-        log.yellow ({ options })
+        if (testMode) log.yellow ({ options })
         return http.get (options)
     }
 
