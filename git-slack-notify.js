@@ -158,17 +158,16 @@
 /*  ------------------------------------------------------------------------ */
 
     const triggerJob = () => {
-        const hostname = config.url
+        const host = config.url
             , port = config.port
             , path = 'job/restart_tracker/build'
             , args = require ('querystring').stringify ({ token: config.accessToken })
             , auth = `Basic ${Buffer.from (config.username + ":" + config.password).toString ("base64")}`
-            , method = 'GET'
-            , options = { hostname, port, auth, method, path: `${path}?${args}`, }
+            , options = { host, port, auth, path: `${path}?${args}`, }
             // , request = `${host}:${port}/${path}?${args}`
 
         log.yellow ({ options })
-        return http.request (options)
+        return http.get (options)
     }
 
 /*  ------------------------------------------------------------------------ */
@@ -204,5 +203,6 @@
 /*  ------------------------------------------------------------------------ */
 
     config.repos.forEach (repo => watch (repo).catch (fatal))
+    // ;(async () => await triggerJob ()) ()
 
 /*  ------------------------------------------------------------------------ */
