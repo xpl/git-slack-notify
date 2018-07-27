@@ -2,7 +2,7 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const log       = require ('ololog'),
+    const log       = require ('ololog').handleNodeErrors (),
           ansi      = require ('ansicolor').nice,
           fs        = require ('fs'),
           path      = require ('path'),
@@ -163,8 +163,8 @@
             , path = 'job/restart_tracker/build'
             , args = require ('querystring').stringify ({ token: config.accessToken })
             , auth = `Basic ${Buffer.from (config.username + ":" + config.password).toString ("base64")}`
-            , options = { host, port, auth, path: `${path}?${args}`, }
-            // , request = `${host}:${port}/${path}?${args}`
+            , method = 'GET'
+            , options = { host, port, auth, path: `http://${host}:${port}/${path}?${args}`, }
 
         log.yellow ({ options })
         return http.get (options)
