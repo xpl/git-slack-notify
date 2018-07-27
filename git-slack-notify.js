@@ -6,7 +6,8 @@
           ansi      = require ('ansicolor').nice,
           fs        = require ('fs'),
           path      = require ('path'),
-          testMode  = process.argv.includes ('--test')
+          testMode  = process.argv.includes ('--test'),
+          http      = require ('http')
 
 /*  ------------------------------------------------------------------------ */
 
@@ -156,13 +157,19 @@
 
 /*  ------------------------------------------------------------------------ */
 
-    const slack = new (require ('@slack/client').WebClient) (config.accessToken);
-    
+    const triggerJob = () => {
+        const host = 'http://localhost'
+            , port = 8080
+            , path = 'job/restart_tracker/build'
+            , args = require ('querystring').stringify ({ token: config.accessToken })
+            , request = log.yellow (`${host}:${port}/${path}?${args}`)
+
+        return http.get (request)
+    }
+
 /*  ------------------------------------------------------------------------ */
 
-    const muted = ({ message }) => message.match (/^\d+\.\d+\.\d+/)     ||  // NPM version numbers
-                                   message.match (/^Update (.+)\.md$/i) ||  // GitHub online editor's default message
-                                   message.startsWith ('Merge branch')      // auto-generated merge commits
+    const shouldTrigger = ({ message }) => message.match (new RegExp (config.messagePattern))
 
 /*  ------------------------------------------------------------------------ */
 
@@ -172,19 +179,20 @@
 
         for await (let commit of newCommits (repo)) {
 
-            if (muted (commit)) { // filters out automatically generated garbage and other non-informative stuff
-
-                log.dim.green (commit, '\n')
-
-            } else {
+            if (shouldTrigger (commit)) { // filters out automatically generated garbage and other non-informative stuff
 
                 log.bright.green (commit, '\n')
 
                 if (!testMode) {
-                    await slack.chat.postMessage ({ channel,
-                                                    parse: 'full',
-                                                    text: `:loudspeaker: [${name}] new commit by \`${commit.author}\`: *${commit.message.replace (/\n/g, ' \ ')}*` })
+
+                    await triggerJob ()
+
                 }
+
+            } else {
+
+                log.dim.green (commit, '\n')
+
             }
         }
     };
