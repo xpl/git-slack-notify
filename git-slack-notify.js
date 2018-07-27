@@ -158,8 +158,8 @@
 /*  ------------------------------------------------------------------------ */
 
     const triggerJob = () => {
-        const hostname = 'http://localhost'
-            , port = 8080
+        const hostname = config.url
+            , port = config.port
             , path = 'job/restart_tracker/build'
             , args = require ('querystring').stringify ({ token: config.accessToken })
             , auth = `Basic ${Buffer.from (config.username + ":" + config.password).toString ("base64")}`
@@ -168,7 +168,7 @@
             // , request = `${host}:${port}/${path}?${args}`
 
         log.yellow ({ options })
-        return http.get (options)
+        return http.request (options)
     }
 
 /*  ------------------------------------------------------------------------ */
