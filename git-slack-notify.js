@@ -162,7 +162,7 @@
             , port = 8080
             , path = 'job/restart_tracker/build'
             , args = require ('querystring').stringify ({ token: config.accessToken })
-            , auth = `Basic ${new Buffer (config.username + ":" + config.password).toString("base64")}`
+            , auth = `Basic ${Buffer.from (config.username + ":" + config.password).toString ("base64")}`
             , method = 'GET'
             , options = { hostname, port, auth, method, path: `${path}?${args}`, }
             // , request = `${host}:${port}/${path}?${args}`
