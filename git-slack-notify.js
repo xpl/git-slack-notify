@@ -184,17 +184,21 @@
 
             if (shouldTrigger (commit)) { // filters out automatically generated garbage and other non-informative stuff
 
-                log.bright.green (commit, '\n')
+                log.green (commit, '\n')
 
                 if (!testMode) {
 
-                    await triggerJob ()
+                    try {
+                        await triggerJob ()
+                    } catch (e) {
+                        log.red ('Jenkins server is unreachable', e)
+                    }
 
                 }
 
             } else {
 
-                log.dim.green (commit, '\n')
+                log.dim.yellow (commit, '\n')
 
             }
         }
